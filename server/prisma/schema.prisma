@@ -1,0 +1,253 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum SubmissionStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  QUERY_RAISED
+  RESUBMITTED
+  APPROVED
+  REJECTED
+}
+
+enum PurposeOfFiling {
+  APPOINTMENT
+  CESSATION
+  CHANGE_IN_DESIGNATION
+}
+
+enum DirectorType {
+  CHAIRMAN
+  EXECUTIVE_DIRECTOR
+  NON_EXECUTIVE_DIRECTOR
+}
+
+enum DirectorCategory {
+  PROMOTER
+  PROFESSIONAL
+  INDEPENDENT
+  SMALL_SHAREHOLDER
+}
+
+enum DirectorDesignation {
+  DIRECTOR
+  MANAGING_DIRECTOR
+  ALTERNATE_DIRECTOR
+  ADDITIONAL_DIRECTOR
+  CASUAL_VACANCY_DIRECTOR
+  NOMINEE_DIRECTOR
+  WHOLE_TIME_DIRECTOR
+}
+
+enum KMPDesignation {
+  MANAGER
+  COMPANY_SECRETARY
+  CEO
+  CFO
+}
+
+enum FormLanguage {
+  ENGLISH
+  HINDI
+}
+
+model User {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  mobile       String
+  passwordHash String
+  role         Role       @default(USER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  lastLoginAt  DateTime?
+
+  submissions   Submission[]
+  auditLogs     AuditLog[]
+  statusChanges StatusHistory[]
+
+  @@map("users")
+}
+
+model Submission {
+  id              String           @id @default(uuid())
+  userId          String
+  referenceNumber String?          @unique
+  formType        String           @default("DIR-12")
+  status          SubmissionStatus @default(DRAFT)
+  currentStep     Int              @default(1)
+  submittedAt     DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company     Company?
+  directors   Director[]
+  kmps        KMP[]
+  attachments Attachment[]
+  declarations Declaration[]
+  auditLogs   AuditLog[]
+  statusHistory StatusHistory[]
+
+  @@map("submissions")
+}
+
+model Company {
+  id                     String  @id @default(uuid())
+  submissionId           String  @unique
+  cin                    String
+  companyName            String
+  registeredOfficeAddress String
+  email                  String
+  country                String  @default("India")
+  state                  String
+  district               String
+  city                   String
+  pinCode                String
+  formLanguage           FormLanguage @default(ENGLISH)
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@map("companies")
+}
+
+model Director {
+  id                   String              @id @default(uuid())
+  submissionId         String
+  purposeOfFiling      PurposeOfFiling     @default(APPOINTMENT)
+  din                  String
+  name                 String
+  fatherName           String
+  residentialAddress   String
+  nationality          String              @default("India")
+  dateOfBirth          DateTime
+  gender               String
+  email                String
+  designation          DirectorDesignation @default(ADDITIONAL_DIRECTOR)
+  appointmentDate      DateTime?
+  category             DirectorCategory    @default(PROMOTER)
+  directorType         DirectorType?
+  alternateDirectorDin  String?
+  alternateDirectorName String?
+  numberOfEntities     Int                 @default(0)
+  cessationDate        DateTime?
+  cessationReason      String?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  submission   Submission   @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  declarations Declaration[]
+
+  @@map("directors")
+}
+
+model KMP {
+  id                       String         @id @default(uuid())
+  submissionId             String
+  din                      String?
+  pan                      String?
+  membershipNumber         String?
+  firstName                String
+  middleName               String?
+  lastName                 String?
+  fatherFirstName          String?
+  fatherMiddleName         String?
+  fatherLastName           String?
+  address                  String
+  dateOfBirth              DateTime?
+  designation              KMPDesignation
+  appointmentOrCessationDate DateTime?
+  mobile                   String?
+  email                    String?
+  purposeOfFiling          PurposeOfFiling @default(APPOINTMENT)
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@map("kmps")
+}
+
+model Attachment {
+  id               String   @id @default(uuid())
+  submissionId     String
+  originalFilename String
+  storedFilename   String
+  mimeType         String
+  size             Int
+  path             String
+  attachmentType   String
+  uploadedBy       String
+  createdAt        DateTime @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@map("attachments")
+}
+
+model Declaration {
+  id              String   @id @default(uuid())
+  submissionId    String
+  directorId      String?
+  declarationType String
+  declarationText String
+  accepted        Boolean  @default(false)
+  signedAt        DateTime?
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  director   Director?  @relation(fields: [directorId], references: [id])
+
+  @@map("declarations")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String?
+  submissionId String?
+  action       String
+  description  String
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
+
+  user       User?       @relation(fields: [userId], references: [id])
+  submission Submission? @relation(fields: [submissionId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model StatusHistory {
+  id           String           @id @default(uuid())
+  submissionId String
+  oldStatus    SubmissionStatus?
+  newStatus    SubmissionStatus
+  changedBy    String
+  comment      String?
+  createdAt    DateTime         @default(now())
+
+  submission Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [changedBy], references: [id])
+
+  @@map("status_history")
+}
