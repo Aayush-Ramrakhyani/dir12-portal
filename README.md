@@ -2,7 +2,7 @@
 
 A web-based corporate compliance portal for filing **DIR-12 forms** — the statutory form required by Indian companies to notify the Ministry of Corporate Affairs (MCA) about changes in company directors and Key Managerial Personnel (KMP).
 
-Built for **Technowire Data Science** as part of a freelance contract (Apr 2026 – Sep 2026).
+Built for **Technowire Data Science** as part of a freelance contract (Jun 2026).
 
 ---
 
