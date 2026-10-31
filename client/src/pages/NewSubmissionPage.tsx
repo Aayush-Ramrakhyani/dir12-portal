@@ -1,3 +1,9 @@
+/*
+ * NewSubmissionPage.tsx
+ * Six-step DIR-12 filing wizard — handles both creating a new submission and
+ * editing an existing draft. Manages form state for company, directors, KMP,
+ * and attachments with 30-second autosave and manual save-draft capability.
+ */
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api, getErrorMessage } from '../services/api';
@@ -62,7 +68,7 @@ export default function NewSubmissionPage() {
     finally { setSaving(false); }
   }, [id, step, company, directors, kmps]);
 
-  // Autosave every 30s
+  // Autosave every 30s — cleans up interval on unmount or dependency change
   useEffect(() => {
     if (!id || !submission) return;
     const timer = setInterval(() => save(), 30000);
@@ -80,7 +86,7 @@ export default function NewSubmissionPage() {
     if (!confirmed) { toast.error('Please confirm the declaration before submitting'); return; }
     setSubmitting(true);
     try {
-      await save(8);
+      await save(8); // Step 8 signals fully completed form in the database
       await api.post(`/submissions/${id}/submit`);
       navigate(`/submissions/${id}/success`);
     } catch (e) { toast.error(getErrorMessage(e)); }
@@ -92,7 +98,7 @@ export default function NewSubmissionPage() {
     fd.append('file', file);
     fd.append('attachmentType', type);
     try {
-      const { data } = await api.post(`/submissions/${id}/attachments`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const { data } = await api.post(`/submissions/${id}/attachments`, fd, { headers: { 'Content-Type': 'multipart/form-data' } }); // Override Content-Type for multipart upload
       setUploadedAttachments(a => [...a, { id: data.data.id, originalFilename: data.data.originalFilename, attachmentType: data.data.attachmentType }]);
       toast.success(`${file.name} uploaded`);
     } catch (e) { toast.error(getErrorMessage(e)); }

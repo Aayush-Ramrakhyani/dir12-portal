@@ -1,3 +1,9 @@
+/*
+ * pdf.controller.ts
+ * Streams a generated PDF of the submission to the client — supports both user
+ * and admin callers (role-aware query), delegates rendering to pdfService, and
+ * sets appropriate Content-Disposition headers for file download.
+ */
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { prisma } from '../utils/prisma';
@@ -8,7 +14,8 @@ export async function downloadSubmissionPdf(req: AuthenticatedRequest, res: Resp
   const { id } = req.params;
 
   const submission = await prisma.submission.findFirst({
-    where: req.userRole === 'ADMIN' ? { id } : { id, userId: req.userId },
+    where: req.userRole === 'ADMIN' ? { id } : { id, userId: req.userId }, // Admins bypass userId ownership check
+
     include: {
       company: true,
       directors: true,

@@ -1,3 +1,9 @@
+/*
+ * kmp.controller.ts
+ * CRUD operations for Key Managerial Personnel (KMP) records — mirrors
+ * director.controller.ts in structure, enforcing ownership and DRAFT-status
+ * checks before any create, update, or delete operation.
+ */
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { prisma } from '../utils/prisma';

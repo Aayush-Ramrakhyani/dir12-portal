@@ -1,3 +1,9 @@
+/*
+ * auth.routes.ts
+ * Express router for authentication endpoints — register, login, token refresh,
+ * logout, and the /me profile fetch; attaches validation middleware and the
+ * authenticate guard where required.
+ */
 import { Router } from 'express';
 import {
   register,

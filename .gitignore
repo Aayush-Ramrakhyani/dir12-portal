@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment variables — NEVER commit these
+server/.env
+.env
+*.env
+
+# Uploads directory — user files, not for git
+uploads/
+
+# Build output
+client/dist/
+server/dist/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

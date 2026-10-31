@@ -1,3 +1,9 @@
+/*
+ * logger.ts
+ * Application-wide Winston logger — uses JSON format in production and
+ * colorized simple format in development; also exports a maskSensitive
+ * helper for redacting secrets in log messages.
+ */
 import winston from 'winston';
 import { config } from '../config';
 

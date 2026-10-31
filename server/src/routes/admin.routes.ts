@@ -1,3 +1,9 @@
+/*
+ * admin.routes.ts
+ * Express router for the admin panel API — exposes user management, all-submission
+ * listing with search/filter, status updates, PDF download, and audit log access;
+ * all routes require both authentication and ADMIN role.
+ */
 import { Router } from 'express';
 import {
   listUsers,
@@ -14,7 +20,7 @@ import { authenticate, requireAdmin } from '../middleware/auth';
 
 const router = Router();
 
-router.use(authenticate, requireAdmin);
+router.use(authenticate, requireAdmin); // All admin routes require valid JWT + ADMIN role
 
 router.get('/stats', adminDashboardStats);
 router.get('/users', listUsers);

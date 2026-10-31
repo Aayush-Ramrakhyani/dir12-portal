@@ -1,3 +1,9 @@
+/*
+ * CINInput.tsx
+ * Smart CIN (Corporate Identity Number) input component with two modes:
+ * direct 21-character entry with auto-verification, and a debounced company-name
+ * search backed by the Finanvo MCA API via useCINLookup.
+ */
 import { useState, useRef, useEffect } from 'react';
 import { Search, CheckCircle, Loader } from 'lucide-react';
 import { useCINLookup } from '../hooks/useCINLookup';
@@ -34,10 +40,10 @@ export default function CINInput({ value, onChange, error, disabled }: CINInputP
     setVerified(false);
     onChange(cin);
 
-    if (cin.length === 21) {
+    if (cin.length === 21) { // Full CIN is always 21 characters
       const result = await lookupCIN(cin);
       if (result) {
-        onChange(cin, result.name);
+        onChange(cin, result.name); // Propagate auto-filled company name to parent form
         setVerified(true);
       }
     }

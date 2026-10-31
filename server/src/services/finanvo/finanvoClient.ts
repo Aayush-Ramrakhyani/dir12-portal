@@ -1,13 +1,9 @@
-/**
- * Finanvo API Client
- *
- * Third-party MCA data provider (mcadownload.com / api5.finanvo.in).
- * Handles authentication with auto-relogin when the 30-minute token expires.
- *
- * Confirmed response shapes (from live API tests 2026-08-17):
- *   POST /user/login      → { data: { token: string, NAME, EMAIL, ... } }
- *   GET  /search/company  → { data: [{ dataid: string (CIN), name: string }] }
- *   GET  /company/cin-docs → { cin: string, docs: FinanvoDocument[] }
+/*
+ * finanvoClient.ts
+ * Singleton service client for the Finanvo third-party MCA data API
+ * (api5.finanvo.in) — manages JWT auth with automatic re-login before the
+ * 30-minute token expires, and exposes company search and CIN filing-history
+ * lookup used throughout the portal.
  */
 
 import axios, { AxiosInstance } from 'axios';
@@ -76,7 +72,7 @@ class FinanvoService {
     }
 
     this.token = token;
-    // Token is valid for 30 minutes — store expiry as ms timestamp
+    // Token is valid for 30 minutes — store expiry 2 min early to refresh proactively
     this.tokenExpiresAt = Date.now() + 28 * 60 * 1000;
     logger.info('Finanvo: authenticated successfully');
   }
@@ -127,5 +123,4 @@ class FinanvoService {
   }
 }
 
-// Singleton — one instance per server process
-export const finanvoService = new FinanvoService();
+export const finanvoService = new FinanvoService(); // Singleton — one instance per server process shares the cached token

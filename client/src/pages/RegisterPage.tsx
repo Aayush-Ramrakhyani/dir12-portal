@@ -1,3 +1,9 @@
+/*
+ * RegisterPage.tsx
+ * Public registration page — collects name, email, mobile, and password
+ * (with confirmation), delegates to AuthContext.register, and redirects
+ * to the dashboard on success with inline field-level error display.
+ */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';

@@ -1,3 +1,9 @@
+/*
+ * upload.ts
+ * Multer middleware configuration for file uploads — validates MIME types and
+ * DSC certificate extensions, stores files under a UUID-based filename in the
+ * configured upload directory, and enforces the per-file size limit from config.
+ */
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -30,8 +36,8 @@ const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    const safeExt = /^\.[a-z0-9]+$/.test(ext) ? ext : '';
-    cb(null, `${uuidv4()}${safeExt}`);
+    const safeExt = /^\.[a-z0-9]+$/.test(ext) ? ext : ''; // Reject suspicious extensions, fall back to no extension
+    cb(null, `${uuidv4()}${safeExt}`); // UUID filename prevents path-traversal and collisions
   },
 });
 

@@ -1,21 +1,8 @@
-/**
- * MCA External API Service — PLACEHOLDER (for official government filing)
- *
- * NOTE: Live MCA data lookup (company search, CIN verification, filing history)
- * is already connected via the Finanvo third-party API in:
- *   server/src/services/finanvo/finanvoClient.ts
- *
- * This file is the placeholder for OFFICIAL GOVERNMENT filing submission —
- * a separate integration that requires MCA authorization.
- *
- * This module is the single integration point for officially authorized MCA APIs.
- * All methods are stubs. Replace implementations here when credentials and
- * authorization from the Ministry of Corporate Affairs are obtained.
- *
- * Integration point: replace these stubs with calls to the authorized MCA REST API
- * or any other officially permitted third-party provider.
- *
- * DO NOT scatter MCA-specific logic through the rest of the application.
+/*
+ * mcaService.ts
+ * Placeholder integration module for the official Ministry of Corporate Affairs
+ * (MCA) filing API — all functions are stubs awaiting authorized credentials;
+ * live company data lookup is handled separately via finanvoClient.ts.
  */
 
 export interface MCASubmissionPayload {

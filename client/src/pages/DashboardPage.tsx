@@ -1,3 +1,9 @@
+/*
+ * DashboardPage.tsx
+ * Main landing page for authenticated users — shows submission status summary
+ * cards, a full submissions table with quick actions, and a "New DIR-12 Filing"
+ * button that creates a draft and navigates immediately into the edit flow.
+ */
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, getErrorMessage } from '../services/api';
@@ -49,7 +55,7 @@ export default function DashboardPage() {
   const downloadPDF = async (submissionId: string, refNo: string) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const r = await fetch(`/api/submissions/${submissionId}/pdf`, { headers: { Authorization: `Bearer ${token}` } });
+      const r = await fetch(`/api/submissions/${submissionId}/pdf`, { headers: { Authorization: `Bearer ${token}` } }); // Use raw fetch — Axios intercepts would complicate blob handling
       const blob = await r.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href = url; a.download = `DEMO_DIR12_${refNo}.pdf`; a.click();

@@ -1,3 +1,9 @@
+/*
+ * AdminLayout.tsx
+ * Persistent shell layout for the admin panel — mirrors AppLayout but uses
+ * a darker navy-dark header, includes admin-specific nav links, and provides
+ * a quick "← User View" escape hatch back to the user dashboard.
+ */
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { LayoutDashboard, FileText, Users, ClipboardList, LogOut, ChevronDown } from 'lucide-react';

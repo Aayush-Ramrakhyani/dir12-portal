@@ -1,3 +1,9 @@
+/*
+ * MCAFilingHistory.tsx
+ * Displays the live MCA filing history for a given CIN, fetched on mount via
+ * the Finanvo-backed /api/mca/company/:cin/filings endpoint; supports
+ * expand/collapse for tables with more than five entries.
+ */
 import { useEffect, useState } from 'react';
 import { useCINLookup } from '../hooks/useCINLookup';
 import type { CINFilingDoc } from '../hooks/useCINLookup';
@@ -27,7 +33,7 @@ export default function MCAFilingHistory({ cin }: { cin: string }) {
       .finally(() => setLoading(false));
   }, [cin, getFilings]);
 
-  const visible = expanded ? docs : docs.slice(0, 5);
+  const visible = expanded ? docs : docs.slice(0, 5); // Show only first 5 rows unless expanded
 
   return (
     <div className="card" style={{ marginTop: 20 }}>

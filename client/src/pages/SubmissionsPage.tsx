@@ -1,3 +1,9 @@
+/*
+ * SubmissionsPage.tsx
+ * Full submissions list for the current user — allows creating new filings,
+ * continuing drafts, viewing details, downloading PDFs, and deleting drafts;
+ * mirrors DashboardPage's table but without the stat summary cards.
+ */
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, getErrorMessage } from '../services/api';

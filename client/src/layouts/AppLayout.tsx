@@ -1,3 +1,9 @@
+/*
+ * AppLayout.tsx
+ * Persistent shell layout for authenticated non-admin users — renders the
+ * sticky top navigation bar, user dropdown, and footer, with the current
+ * page content injected via React Router's <Outlet />.
+ */
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { LayoutDashboard, FileText, Shield, LogOut, ChevronDown } from 'lucide-react';
@@ -17,7 +23,7 @@ export default function AppLayout() {
   };
 
   const isActive = (to: string) =>
-    to === '/dashboard' ? location.pathname === to : location.pathname.startsWith(to);
+    to === '/dashboard' ? location.pathname === to : location.pathname.startsWith(to); // Exact match for dashboard, prefix match for all others
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

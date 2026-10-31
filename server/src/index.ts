@@ -1,3 +1,9 @@
+/*
+ * index.ts
+ * Express application bootstrap — configures security middleware (Helmet, CORS),
+ * rate limiting, compression, request logging, mounts all API route groups,
+ * and starts the HTTP server after verifying the database connection.
+ */
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -26,9 +32,9 @@ app.use(
 app.use(
   cors({
     origin: (origin, cb) => {
-      if (!origin) return cb(null, true);
+      if (!origin) return cb(null, true); // Allow server-to-server requests (no Origin header)
       if (config.nodeEnv === 'development' && /^https?:\/\/localhost(:\d+)?$/.test(origin)) {
-        return cb(null, true);
+        return cb(null, true); // Accept any localhost port in development
       }
       if (origin === config.clientUrl) return cb(null, true);
       cb(new Error('CORS: origin not allowed'));
@@ -50,7 +56,7 @@ const limiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 20, // Stricter cap for auth endpoints to deter brute force
   message: { success: false, message: 'Too many authentication attempts.' },
 });
 
@@ -60,7 +66,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 if (config.nodeEnv !== 'test') {
-  app.use(morgan('combined', { stream: { write: (msg) => logger.info(msg.trim()) } }));
+  app.use(morgan('combined', { stream: { write: (msg) => logger.info(msg.trim()) } })); // Pipe Morgan HTTP logs into Winston
 }
 
 // ── Health check ─────────────────────────────────────────────────────────────
@@ -69,7 +75,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 // ── Routes ───────────────────────────────────────────────────────────────────
-app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/auth', authLimiter, authRoutes); // Auth routes get the tighter rate limiter
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/mca', mcaRoutes);

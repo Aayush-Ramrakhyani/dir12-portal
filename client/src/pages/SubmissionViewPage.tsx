@@ -1,3 +1,9 @@
+/*
+ * SubmissionViewPage.tsx
+ * Read-only detail view for a single submission — renders company, directors,
+ * KMP, attachments, and status history sections, and appends the live
+ * MCAFilingHistory component when a CIN is available.
+ */
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api, getErrorMessage } from '../services/api';

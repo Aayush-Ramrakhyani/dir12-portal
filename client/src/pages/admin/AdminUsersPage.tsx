@@ -1,3 +1,9 @@
+/*
+ * AdminUsersPage.tsx
+ * Admin user management page — lists all registered users with submission
+ * counts, join dates, and last-login timestamps; allows toggling ACTIVE /
+ * DISABLED status for non-admin accounts via a single PUT endpoint.
+ */
 import { useEffect, useState } from 'react';
 import { api, getErrorMessage } from '../../services/api';
 import type { User } from '../../types';

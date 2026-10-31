@@ -1,3 +1,9 @@
+/*
+ * submission.controller.ts
+ * Core submission lifecycle controller — handles create, list, get, update
+ * (with Prisma transaction for company/directors/KMP), formal submission with
+ * reference-number generation, delete, status fetch, and history retrieval.
+ */
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { prisma } from '../utils/prisma';
@@ -70,7 +76,7 @@ export async function updateSubmission(req: AuthenticatedRequest, res: Response)
     return errorResponse(res, 'Cannot edit a submitted form', 400);
   }
 
-  // Update step and company in transaction
+  // Update step and company in transaction — ensures partial saves don't leave inconsistent state
   await prisma.$transaction(async (tx) => {
     if (currentStep !== undefined) {
       await tx.submission.update({ where: { id }, data: { currentStep } });
@@ -142,7 +148,7 @@ export async function submitSubmission(req: AuthenticatedRequest, res: Response)
     return errorResponse(res, 'At least one director is required', 400);
   }
 
-  const refNumber = await generateReferenceNumber();
+  const refNumber = await generateReferenceNumber(); // Assigns a sequentially-padded DEMO reference number
 
   await prisma.$transaction(async (tx) => {
     await tx.submission.update({

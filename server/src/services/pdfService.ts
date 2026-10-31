@@ -1,3 +1,9 @@
+/*
+ * pdfService.ts
+ * Generates a multi-page PDF document for a submitted DIR-12 filing using
+ * pdf-lib — renders company details, directors, KMP, attachments, declaration,
+ * and DSC signature boxes with page-overflow handling and a footer disclaimer.
+ */
 import { PDFDocument, StandardFonts, rgb, PDFFont, PDFPage } from 'pdf-lib';
 
 interface PdfSubmissionData {
@@ -60,8 +66,8 @@ export async function generateSubmissionPdf(data: PdfSubmissionData): Promise<Bu
   const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-  const pageWidth = 595;
-  const pageHeight = 842;
+  const pageWidth = 595;  // A4 width in PDF points
+  const pageHeight = 842; // A4 height in PDF points
   const margin = 50;
 
   function addPage(): PDFPage {
@@ -271,7 +277,7 @@ export async function generateSubmissionPdf(data: PdfSubmissionData): Promise<Bu
     }
 
     col++;
-    if (col >= 2) { col = 0; y -= boxH + 10; }
+    if (col >= 2) { col = 0; y -= boxH + 10; } // Move to next row after two signature boxes per row
   }
   if (col > 0) y -= boxH + 10;
 
@@ -294,7 +300,7 @@ export async function generateSubmissionPdf(data: PdfSubmissionData): Promise<Bu
     rgb(0.6, 0.1, 0.1)
   );
 
-  // Page numbers
+  // Page numbers — added last so getPageCount() is final
   pdfDoc.getPages().forEach((pg, idx) => {
     drawText(pg, `Page ${idx + 1} of ${pdfDoc.getPageCount()}`, pageWidth - 100, 14, helvetica, 8, rgb(0.5, 0.5, 0.5));
   });

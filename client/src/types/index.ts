@@ -1,3 +1,9 @@
+/*
+ * types/index.ts
+ * Shared TypeScript type definitions for the entire frontend — covers User,
+ * Submission, Company, Director, KMP, Attachment, AuditLog, and all related
+ * enums and API response wrappers consumed across pages and services.
+ */
 export interface User {
   id: string;
   name: string;

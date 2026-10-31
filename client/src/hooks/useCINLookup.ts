@@ -1,3 +1,9 @@
+/*
+ * useCINLookup.ts
+ * Custom React hook that exposes company search (by name, debounced) and CIN
+ * lookup / filing-history fetch — all backed by the server's Finanvo MCA proxy
+ * endpoints at /api/mca/company/*.
+ */
 import { useState, useCallback, useRef } from 'react';
 import { api } from '../services/api';
 
@@ -30,7 +36,7 @@ export function useCINLookup() {
       setSuggestions([]);
       return;
     }
-    debounceRef.current = setTimeout(async () => {
+    debounceRef.current = setTimeout(async () => { // 400 ms debounce before hitting the API
       setSearching(true);
       try {
         const { data } = await api.get(`/mca/company/search?q=${encodeURIComponent(query)}`);

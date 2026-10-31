@@ -1,3 +1,9 @@
+/*
+ * errorHandler.ts
+ * Global Express error-handling middleware — logs unhandled errors via Winston
+ * and returns a sanitised 500 response (full message in development only);
+ * also exports a notFound handler for unmatched routes.
+ */
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
 

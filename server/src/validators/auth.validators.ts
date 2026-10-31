@@ -1,3 +1,9 @@
+/*
+ * auth.validators.ts
+ * Express-validator rule chains for the /auth/register and /auth/login endpoints —
+ * enforces Indian mobile number format, password complexity (upper + lower + digit),
+ * and password confirmation equality before the controller runs.
+ */
 import { body } from 'express-validator';
 
 export const registerValidators = [
@@ -5,7 +11,7 @@ export const registerValidators = [
   body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
   body('mobile')
     .trim()
-    .matches(/^[6-9]\d{9}$/)
+    .matches(/^[6-9]\d{9}$/) // Indian mobile numbers start with 6-9 followed by 9 digits
     .withMessage('Valid 10-digit Indian mobile number required'),
   body('password')
     .isLength({ min: 8 })

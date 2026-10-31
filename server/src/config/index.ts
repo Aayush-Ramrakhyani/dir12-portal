@@ -1,3 +1,9 @@
+/*
+ * config/index.ts
+ * Central configuration module — reads all environment variables with sensible
+ * defaults and exports a typed config object consumed throughout the server,
+ * covering server port, JWT secrets, file upload limits, and Finanvo API credentials.
+ */
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -8,7 +14,7 @@ export const config = {
   uploadDir: process.env.UPLOAD_DIR || 'uploads',
   maxFileSizeMb: parseInt(process.env.MAX_FILE_SIZE_MB || '10', 10),
   jwt: {
-    secret: process.env.JWT_SECRET || 'fallback-secret-not-for-production',
+    secret: process.env.JWT_SECRET || 'fallback-secret-not-for-production', // Must be overridden via env in production
     refreshSecret: process.env.JWT_REFRESH_SECRET || 'fallback-refresh-not-for-production',
     expiresIn: process.env.JWT_EXPIRES_IN || '15m',
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',

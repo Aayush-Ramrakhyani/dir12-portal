@@ -1,3 +1,9 @@
+/*
+ * director.controller.ts
+ * CRUD operations for Director records linked to a submission — each mutation
+ * verifies that the requesting user owns the parent submission and that it is
+ * still in DRAFT status before allowing changes.
+ */
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { prisma } from '../utils/prisma';

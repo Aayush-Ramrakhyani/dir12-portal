@@ -1,3 +1,9 @@
+/*
+ * SuccessPage.tsx
+ * Confirmation screen shown after a successful DIR-12 demo submission —
+ * displays the generated demo reference number fetched from the API and
+ * provides download (PDF), view submission, and dashboard navigation actions.
+ */
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';

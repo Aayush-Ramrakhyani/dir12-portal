@@ -1,3 +1,9 @@
+/*
+ * AdminDashboardPage.tsx
+ * Admin overview page — fetches aggregate statistics from /api/admin/stats
+ * and renders clickable metric cards (users, submissions by status) that
+ * link through to the relevant filtered list pages.
+ */
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../services/api';

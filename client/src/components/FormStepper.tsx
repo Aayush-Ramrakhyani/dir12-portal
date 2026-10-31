@@ -1,3 +1,9 @@
+/*
+ * FormStepper.tsx
+ * Visual multi-step progress indicator used in the DIR-12 filing form —
+ * renders numbered circles connected by lines, marking completed steps with
+ * a checkmark and highlighting the current active step.
+ */
 import { Check } from 'lucide-react';
 
 interface Step {

@@ -1,3 +1,9 @@
+/*
+ * auth.controller.ts
+ * Handles user registration, login, token refresh, logout, and profile fetch —
+ * uses Argon2 for password hashing, issues short-lived access tokens and
+ * long-lived refresh tokens, and records every auth event in the audit log.
+ */
 import { Request, Response } from 'express';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
@@ -37,7 +43,7 @@ export async function register(req: Request, res: Response) {
     return errorResponse(res, 'Email already registered', 409);
   }
 
-  const passwordHash = await argon2.hash(password);
+  const passwordHash = await argon2.hash(password); // Argon2id with secure defaults
 
   const user = await prisma.user.create({
     data: { name, email, mobile, passwordHash },
@@ -86,7 +92,7 @@ export async function login(req: Request, res: Response) {
 
   await createAuditLog({
     userId: user.id,
-    action: user.role === 'ADMIN' ? 'ADMIN_LOGIN' : 'USER_LOGIN',
+    action: user.role === 'ADMIN' ? 'ADMIN_LOGIN' : 'USER_LOGIN', // Differentiate admin vs user logins in audit trail
     description: `User logged in: ${email}`,
     req,
   });

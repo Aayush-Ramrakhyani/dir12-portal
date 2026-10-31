@@ -1,3 +1,9 @@
+/*
+ * index.css
+ * Global stylesheet for the Corporate Compliance Portal — defines CSS custom
+ * properties (design tokens), base resets, and a comprehensive utility-class
+ * system covering forms, buttons, cards, tables, badges, and layout helpers.
+ */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; }

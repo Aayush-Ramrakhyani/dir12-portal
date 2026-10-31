@@ -1,3 +1,9 @@
+/*
+ * apiResponse.ts
+ * Thin helpers that standardise the JSON shape of every API response —
+ * successResponse wraps data with { success: true, message, data } and
+ * errorResponse adds optional field-level errors for form validation.
+ */
 import { Response } from 'express';
 
 export function successResponse(

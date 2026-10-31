@@ -1,3 +1,9 @@
+/*
+ * LoginPage.tsx
+ * Public login page for the Corporate Compliance Portal — handles credential
+ * submission, per-field validation error display, and provides one-click
+ * demo credential fill-in buttons for easy development testing.
+ */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';

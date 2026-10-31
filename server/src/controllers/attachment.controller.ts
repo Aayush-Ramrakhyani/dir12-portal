@@ -1,3 +1,9 @@
+/*
+ * attachment.controller.ts
+ * Manages file attachments on submissions — upload (with disk-cleanup on error),
+ * list, delete (removes file from disk and DB record), and download with
+ * owner-or-admin authorization check.
+ */
 import { Response } from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -14,7 +20,7 @@ export async function uploadAttachment(req: AuthenticatedRequest, res: Response)
   });
   if (!submission) {
     // remove uploaded file if submission not found
-    if (req.file) fs.unlinkSync(req.file.path);
+    if (req.file) fs.unlinkSync(req.file.path); // Clean up already-written file if submission lookup fails
     return errorResponse(res, 'Submission not found', 404);
   }
 
@@ -110,7 +116,7 @@ export async function downloadAttachment(req: AuthenticatedRequest, res: Respons
   if (!attachment) return errorResponse(res, 'Attachment not found', 404);
 
   const isOwner = attachment.submission.userId === req.userId;
-  const isAdmin = req.userRole === 'ADMIN';
+  const isAdmin = req.userRole === 'ADMIN'; // Admins may download any attachment
 
   if (!isOwner && !isAdmin) return errorResponse(res, 'Forbidden', 403);
 

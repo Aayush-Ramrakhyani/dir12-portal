@@ -1,3 +1,9 @@
+/*
+ * AdminAuditLogsPage.tsx
+ * Paginated audit log viewer for the admin panel — fetches 50 entries per
+ * page from /api/admin/audit-logs and color-codes each action type for
+ * quick visual scanning of significant events.
+ */
 import { useEffect, useState } from 'react';
 import { api } from '../../services/api';
 import type { AuditLog } from '../../types';

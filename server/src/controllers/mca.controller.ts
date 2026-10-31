@@ -31,7 +31,7 @@ export async function getCompanyByCIN(req: Request, res: Response) {
   if (!cin) return errorResponse(res, 'CIN is required', 400);
 
   try {
-    // Use company search with exact CIN — Finanvo search works on CIN too
+    // Use company search with exact CIN — Finanvo search endpoint accepts both name and CIN
     const results = await finanvoService.searchCompanies(cin);
     const match = results.find((c) => c.cin === cin) ?? results[0] ?? null;
     return successResponse(res, match);

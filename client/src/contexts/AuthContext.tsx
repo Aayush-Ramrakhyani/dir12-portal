@@ -1,3 +1,9 @@
+/*
+ * AuthContext.tsx
+ * React context providing application-wide authentication state — exposes the
+ * current user, loading flag, isAdmin derived value, and login/logout/register
+ * actions, with automatic session restoration from localStorage on mount.
+ */
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { api } from '../services/api';
 import type { User } from '../types';
@@ -39,7 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  useEffect(() => { fetchMe(); }, [fetchMe]);
+  useEffect(() => { fetchMe(); }, [fetchMe]); // Restore session on app load
 
   const login = async (email: string, password: string) => {
     const { data } = await api.post('/auth/login', { email, password });
@@ -64,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, logout, register, isAdmin: user?.role === 'ADMIN' }}
+      value={{ user, loading, login, logout, register, isAdmin: user?.role === 'ADMIN' }} // isAdmin derived inline to stay reactive
     >
       {children}
     </AuthContext.Provider>

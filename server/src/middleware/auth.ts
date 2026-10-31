@@ -1,3 +1,9 @@
+/*
+ * auth.ts
+ * Express middleware for JWT authentication and role-based access control —
+ * authenticate verifies the Bearer token and attaches userId/userRole to the
+ * request; requireAdmin guards admin-only routes and rejects non-ADMIN roles.
+ */
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
@@ -32,7 +38,7 @@ export async function authenticate(
     });
 
     if (!user || user.status === 'DISABLED') {
-      return errorResponse(res, 'Account disabled or not found', 401);
+      return errorResponse(res, 'Account disabled or not found', 401); // Reject valid tokens for disabled accounts
     }
 
     req.userId = user.id;

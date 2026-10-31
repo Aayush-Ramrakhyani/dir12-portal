@@ -1,3 +1,9 @@
+/*
+ * admin.controller.ts
+ * Admin-only controller handling user management, cross-user submission
+ * listing with search/filter/pagination, status workflow updates (with
+ * history recording), audit log retrieval, and dashboard statistics.
+ */
 import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { prisma } from '../utils/prisma';
@@ -26,7 +32,7 @@ export async function toggleUserStatus(req: AuthenticatedRequest, res: Response)
   const { userId } = req.params;
 
   if (userId === req.userId) {
-    return errorResponse(res, 'Cannot disable your own account', 400);
+    return errorResponse(res, 'Cannot disable your own account', 400); // Prevent self-lockout
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -68,7 +74,7 @@ export async function listAllSubmissions(req: Request, res: Response) {
     ];
   }
 
-  const [submissions, total] = await Promise.all([
+  const [submissions, total] = await Promise.all([ // Run count and data query in parallel for efficiency
     prisma.submission.findMany({
       where,
       include: {
@@ -188,7 +194,7 @@ export async function adminDashboardStats(_req: Request, res: Response) {
     underReview,
     approved,
     rejected,
-  ] = await Promise.all([
+  ] = await Promise.all([ // All seven counts run concurrently against the DB
     prisma.user.count({ where: { role: 'USER' } }),
     prisma.submission.count(),
     prisma.submission.count({ where: { status: 'DRAFT' } }),

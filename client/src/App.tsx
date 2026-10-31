@@ -1,3 +1,10 @@
+/*
+ * App.tsx
+ * Root application component — defines the full client-side route tree,
+ * wraps everything in AuthProvider, and enforces access control via
+ * ProtectedRoute (authenticated users), AdminRoute (ADMIN role only),
+ * and PublicRoute (unauthenticated only).
+ */
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import AppLayout from './layouts/AppLayout';
@@ -20,7 +27,7 @@ import AdminAuditLogsPage from './pages/admin/AdminAuditLogsPage';
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><span className="spinner spinner-lg" /></div>;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to="/login" replace />; // Redirect unauthenticated visitors to login
   return <>{children}</>;
 }
 
@@ -28,14 +35,14 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, loading, isAdmin } = useAuth();
   if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><span className="spinner spinner-lg" /></div>;
   if (!user) return <Navigate to="/login" replace />;
-  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  if (!isAdmin) return <Navigate to="/dashboard" replace />; // Non-admin users bounced back to user dashboard
   return <>{children}</>;
 }
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return null;
-  if (user) return <Navigate to={user.role === 'ADMIN' ? '/admin' : '/dashboard'} replace />;
+  if (user) return <Navigate to={user.role === 'ADMIN' ? '/admin' : '/dashboard'} replace />; // Already-authenticated users skip login/register
   return <>{children}</>;
 }
 

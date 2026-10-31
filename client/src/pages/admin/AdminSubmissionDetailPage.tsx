@@ -1,3 +1,9 @@
+/*
+ * AdminSubmissionDetailPage.tsx
+ * Admin detail view for a single submission — shows company, directors, and
+ * status history in the main column, and a sticky "Update Status" action panel
+ * on the right that lets admins change workflow status with an optional comment.
+ */
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api, getErrorMessage } from '../../services/api';

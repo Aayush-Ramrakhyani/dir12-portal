@@ -1,3 +1,9 @@
+/*
+ * seed.ts
+ * Prisma seed script — creates demo admin, two demo users, and sample
+ * submissions (APPROVED, UNDER_REVIEW, and DRAFT) with directors, companies,
+ * status history, and audit log entries for development and demo purposes.
+ */
 import { PrismaClient } from '@prisma/client';
 import argon2 from 'argon2';
 
@@ -7,7 +13,7 @@ async function main() {
   console.log('🌱 Seeding demo data...');
 
   // Seed admin
-  const adminHash = await argon2.hash('Admin@1234');
+  const adminHash = await argon2.hash('Admin@1234'); // Argon2 hash — matches demo credentials shown on LoginPage
   const admin = await prisma.user.upsert({
     where: { email: 'admin@demo.local' },
     update: {},
@@ -252,7 +258,7 @@ async function main() {
         createdAt: new Date('2026-07-18'),
       },
     ],
-    skipDuplicates: true,
+    skipDuplicates: true, // Safe to re-run seed without duplicating audit entries
   });
 
   console.log('✅ Seed complete.');

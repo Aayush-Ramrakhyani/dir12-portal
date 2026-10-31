@@ -1,3 +1,9 @@
+/*
+ * mca.routes.ts
+ * Express router for MCA data lookup endpoints backed by the Finanvo API —
+ * applies a dedicated, tighter rate limiter (60 req / 15 min) to all three
+ * routes to protect against excessive external API usage.
+ */
 import { Router } from 'express';
 import { searchCompany, getCompanyByCIN, getCompanyFilings } from '../controllers/mca.controller';
 import { authenticate } from '../middleware/auth';
@@ -12,7 +18,7 @@ const mcaLimiter = rateLimit({
   message: { success: false, message: 'Too many MCA lookup requests. Please wait.' },
 });
 
-router.use(authenticate, mcaLimiter);
+router.use(authenticate, mcaLimiter); // All MCA routes require auth and respect the tighter rate limit
 
 router.get('/company/search', searchCompany);
 router.get('/company/:cin', getCompanyByCIN);

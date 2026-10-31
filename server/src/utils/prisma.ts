@@ -1,3 +1,9 @@
+/*
+ * prisma.ts
+ * Prisma client singleton — prevents multiple client instances during hot
+ * reloads in development by caching the instance on globalThis; exports
+ * a connectDatabase helper that exits the process on connection failure.
+ */
 import { PrismaClient } from '@prisma/client';
 import { logger } from './logger';
 
@@ -8,12 +14,12 @@ export const prisma =
   new PrismaClient({
     log:
       process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
+        ? ['query', 'error', 'warn'] // Verbose query logging in development
         : ['error'],
   });
 
 if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
+  globalForPrisma.prisma = prisma; // Cache instance to survive hot-module-reload
 }
 
 export async function connectDatabase() {

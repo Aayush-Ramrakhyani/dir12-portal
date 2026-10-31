@@ -1,3 +1,9 @@
+/*
+ * AdminSubmissionsPage.tsx
+ * Admin view of all submissions across all users — supports free-text search
+ * (reference number, CIN, company name, email) and status filtering via URL
+ * query params, enabling deep linking to filtered result sets.
+ */
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../../services/api';
@@ -20,7 +26,7 @@ export default function AdminSubmissionsPage() {
     setLoading(true);
     const params = new URLSearchParams();
     if (s) params.set('search', s);
-    if (st) params.set('status', st);
+    if (st) params.set('status', st); // Only include status param when a filter is selected
     api.get(`/admin/submissions?${params}`)
       .then(({ data }) => { setSubmissions(data.data.submissions); setTotal(data.data.total); })
       .finally(() => setLoading(false));

@@ -1,6 +1,12 @@
+/*
+ * api.ts
+ * Configured Axios instance for all backend API calls — attaches the JWT access
+ * token to every request and handles transparent token refresh on 401 responses,
+ * redirecting to /login when refresh also fails.
+ */
 import axios, { AxiosError } from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const BASE_URL = import.meta.env.VITE_API_URL || '/api'; // Falls back to same-origin /api for production proxying
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -20,12 +26,12 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const original = error.config as typeof error.config & { _retry?: boolean };
     if (error.response?.status === 401 && !original?._retry) {
-      original._retry = true;
+      original._retry = true; // Guard flag prevents infinite retry loops
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) throw new Error('No refresh token');
 
-        const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
+        const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken }); // Use bare axios (not intercepted instance) to avoid loop
         localStorage.setItem('accessToken', data.data.accessToken);
         localStorage.setItem('refreshToken', data.data.refreshToken);
 

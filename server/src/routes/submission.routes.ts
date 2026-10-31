@@ -1,3 +1,9 @@
+/*
+ * submission.routes.ts
+ * Express router for all user submission operations — CRUD on submissions,
+ * director and KMP sub-resources, file attachment handling, PDF generation,
+ * and status/history queries; all routes require authentication.
+ */
 import { Router } from 'express';
 import {
   createSubmission,
@@ -23,7 +29,7 @@ import { upload } from '../middleware/upload';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate); // All submission routes require a valid JWT
 
 // Submissions
 router.post('/', createSubmission);

@@ -1,3 +1,9 @@
+/*
+ * auditLog.ts
+ * Utility that writes an AuditLog record to the database for significant
+ * actions (login, submission, status changes, file uploads) — failures are
+ * logged but never propagated so they cannot disrupt primary request handling.
+ */
 import { Request } from 'express';
 import { prisma } from '../utils/prisma';
 import { logger } from '../utils/logger';
@@ -19,7 +25,7 @@ export async function createAuditLog(opts: AuditOptions) {
         action: opts.action,
         description: opts.description,
         ipAddress: opts.req
-          ? (opts.req.headers['x-forwarded-for'] as string) || opts.req.socket.remoteAddress
+          ? (opts.req.headers['x-forwarded-for'] as string) || opts.req.socket.remoteAddress // Prefer proxy-forwarded IP
           : undefined,
         userAgent: opts.req ? opts.req.headers['user-agent'] : undefined,
       },
